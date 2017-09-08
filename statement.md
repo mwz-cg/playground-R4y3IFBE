@@ -16,7 +16,7 @@ function createRect(width, height, methodName, method, areaName) {
     var obj = {
         x: 0, y: 0, width: width, height: height,
         toString: function() {
-            return '(' + [this.x, this.y, this.width, this.height].join(', ') + ')';
+            return '(' + [this.x, this.y, this.x + this.width, this.y + this.height].join(', ') + ')';
         }
     };
 
@@ -30,8 +30,8 @@ function createRect(width, height, methodName, method, areaName) {
     });
 }
 
-var rect = createRect(3, 4, 'translate', function(x, y) {this.x += x; this.y += y;}, 'area');
-rect.translate(2, 10);
+var rect = createRect(4, 5, 'translate', function(x, y) {this.x += x; this.y += y;}, 'area');
+rect.translate(1, 2);
 console.log(rect + ': ' + rect.area);
 ```
 
@@ -56,15 +56,15 @@ function createRect(width, height, method, areaName) {
     return {
         x: 0, y: 0, width, height,
         toString() {
-            return `(${this.x}, ${this.y}, ${this.width}, ${this.height})`;
+            return `(${this.x}, ${this.y}, ${this.x + this.width}, ${this.y + this.height})`;
         },
-        [methodName]: method,
+        [method.name]: method,
         get [areaName]() { return this.width * this.height; }
     };
 }
 
-let rect = createRect(3, 4, 'translate', function(x, y) {this.x += x; this.y += y;}, 'area');
-rect.translate(2, 10);
+let rect = createRect(4, 5, function translate(x, y) {this.x += x; this.y += y;}, 'area');
+rect.translate(1, 2);
 console.log(`${rect}: ${rect.area}`);
 ```
 
