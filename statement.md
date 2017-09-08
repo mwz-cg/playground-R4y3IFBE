@@ -155,8 +155,52 @@ console.log(one);
 console.log(`these variables refer to the same symbol: ${one === two}`);
 ```
 
-ES6 defines several well-known symbols using a notation `@@name` that correspond to `Symbol.name`. So `@@iterator` is just the global symbol `Symbol.iterator`:
+ES6 defines several well-known symbols using a notation `@@name` that correspond to `Symbol.name`. So `@@iterator` is just the global symbol `Symbol.iterator`! There are a few well-known symbols, another interesting one is `@@toStringTag`:
 
 ```javascript runnable
-console.log(Symbol.iterator === Symbol.for('iterator'));
+let myObject = {};
+console.log(myObject.toString());
+
+myObject = {
+    get [Symbol.toStringTag]() {
+        return 'Custom';
+    }
+};
+
+console.log(myObject.toString());
+```
+
+Let's go back to our iterators.
+
+## Iterator interface
+
+The *Iterator* interface must declare a `next` method that returns an object conforming to the *IteratorResult* interface: an optional `done` property (`false` if absent) indicating whether iteration is done, and if `done` is `false`, a `value` property with the current iteration element value.
+
+## Complete example
+
+```javascript runnable
+function makeSlug(string) {
+    return {
+        [Symbol.iterator]: function() {
+            const it = string[Symbol.iterator()];
+            return {
+                next() {
+                    let next = it.next();
+                    if (it.done) {
+                        return {done: true};
+                    } else {
+                        let value = it.value.toLowercase().replace(' ', '-');
+                        return {done: false, value};
+                    }
+                }
+            }
+        }
+    };
+}
+
+let slug = '';
+for (const c of makeSlug('Embrace modern JavaScript - ES6 and beyond')) {
+    slug += c;
+}
+console.log(slug);
 ```
