@@ -182,14 +182,14 @@ The *Iterator* interface must declare a `next` method that returns an object con
 function makeSlug(string) {
     return {
         [Symbol.iterator]: function() {
-            const it = string[Symbol.iterator()];
+            const it = string[Symbol.iterator]();
             return {
                 next() {
                     let next = it.next();
-                    if (it.done) {
+                    if (next.done) {
                         return {done: true};
                     } else {
-                        let value = it.value.toLowercase().replace(' ', '-');
+                        let value = next.value.toLowerCase().replace(' ', '-');
                         return {done: false, value};
                     }
                 }
